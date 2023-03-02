@@ -7,5 +7,6 @@ module.exports = {
 	moduleNameMapper: {
 		'^@libs/(.*)$': ['<rootDir>/libs/$1'],
 		'^@mocks/(.*)$': ['<rootDir>/mocks/$1'],
+		'^@errors/(.*)$': ['<rootDir>/errors/$1'],
 	},
 };

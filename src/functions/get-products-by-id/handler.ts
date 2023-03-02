@@ -1,3 +1,4 @@
+import { EmptyValueError, ProductNotFoundError } from '@errors/index';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { PRODUCTS } from '@mocks/products';
@@ -11,13 +12,13 @@ export const getProductsById: ValidatedEventAPIGatewayProxyEvent<
 		const id = event.pathParameters.productId;
 
 		if (!id) {
-			throw new Error('ID is not defined.');
+			throw new EmptyValueError('ID is not defined.');
 		}
 
 		const product = products.find((item) => item.id === id);
 
 		if (!product) {
-			throw new Error('Product is not found.');
+			throw new ProductNotFoundError('Product is not found.');
 		}
 
 		return formatJSONResponse(200, {
@@ -25,7 +26,14 @@ export const getProductsById: ValidatedEventAPIGatewayProxyEvent<
 		});
 	} catch (e: unknown) {
 		if (e instanceof Error) {
-			return formatJSONResponse(404, { message: e.message });
+			if (e instanceof EmptyValueError) {
+				return formatJSONResponse(500, { message: e.message });
+			}
+			if (e instanceof ProductNotFoundError) {
+				return formatJSONResponse(404, { message: e.message });
+			}
+
+			return formatJSONResponse(500, { message: e.message });
 		}
 	}
 };
