@@ -2,6 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 
 import { getProductsById } from './handler';
 import { formatJSONResponse } from '@libs/api-gateway';
+import type { ValidatedAPIGatewayProxyEvent } from 'src/@typings/aws';
+import type { Product } from 'src/@typings/product';
 
 describe('#getProductsById', () => {
 	const event = {

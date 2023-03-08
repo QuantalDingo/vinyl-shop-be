@@ -1,10 +1,18 @@
-declare type ValidatedAPIGatewayProxyEvent<S> = Omit<
-	import('aws-lambda').APIGatewayProxyEvent,
-	'body'
-> & { body: import('json-schema-to-ts').FromSchema<S> };
+import { AWS } from '@serverless/typescript';
+import {
+	APIGatewayProxyEvent,
+	Handler,
+	APIGatewayProxyResult,
+} from 'aws-lambda';
 
-declare type ValidatedEventAPIGatewayProxyEvent<S> =
-	import('aws-lambda').Handler<
-		ValidatedAPIGatewayProxyEvent<S>,
-		import('aws-lambda').APIGatewayProxyResult
-	>;
+import { FromSchema } from 'json-schema-to-ts';
+
+export type ValidatedAPIGatewayProxyEvent<S> = Omit<
+	APIGatewayProxyEvent,
+	'body'
+> & { body: FromSchema<S> };
+
+export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<
+	ValidatedAPIGatewayProxyEvent<S>,
+	APIGatewayProxyResult
+>;
